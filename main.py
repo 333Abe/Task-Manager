@@ -1,6 +1,4 @@
-
-
-task_list = []
+import json
 
 def assign_id():
     id_list = [task['id'] for task in task_list]
@@ -38,7 +36,7 @@ def list_tasks():
         print("Empty")
 
     print(
-        f"\n\n"
+        f"\n"
         f"Completed tasks\n"
         f"---------------"
     )
@@ -95,6 +93,16 @@ def validate_id(id):
         print("Invalid ID")
         return False
 
+def save_task_list():
+    with open("tasks.json", 'w') as f:
+        json.dump(task_list, f)
+
+try:
+    with open("tasks.json", 'r') as f:
+        task_list = json.load(f)
+except FileNotFoundError:
+        task_list = []
+
 print(
     f"--------------- Task Manager --------------\n"
     f"Commands: list, add, complete, delete, quit\n"
@@ -111,6 +119,7 @@ while True:
                 f">>> "
             )
             add_task(desc)
+            save_task_list()
         case 'complete' | 'c':
             task_id = input(
                 f"Please type the ID of the task you wish to mark as complete:\n"
@@ -118,6 +127,7 @@ while True:
             )
             if validate_id(task_id):
                 complete_task(int(task_id))
+            save_task_list()
         case 'delete' | 'd':
             task_id = input(
                 f"Please type the ID of the task you wish to delete:\n"
@@ -125,6 +135,7 @@ while True:
             )
             if validate_id(task_id):
                 delete_task(int(task_id))
+            save_task_list()
         case 'quit' | 'q':
             print("Goodbye")
             break
