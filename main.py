@@ -2,8 +2,6 @@
 
 task_list = []
 
-completed_tasks = []
-
 def assign_id():
     id_list = [task['id'] for task in task_list]
     try:
@@ -15,73 +13,81 @@ def add_task(desc):
     id = assign_id()
     task_list.append({
         'id': id,
-        'desc': desc
+        'desc': desc,
+        'status': 'incomplete'
     })
 
 def list_tasks():
+
+    num_incomplete = [task['status'] for task in task_list].count('incomplete')
+    num_complete = [task['status'] for task in task_list].count('complete')
+
     print(
         f"Incomplete tasks\n"
-        f"----------------\n"
+        f"----------------"
     )
-    for task in task_list:
-        print(
-            f"ID: {task['id']}\n"
-            f"Description {task['desc']}"
-        )
+    if num_incomplete > 0:
+        for task in task_list:
+            if task['status'] == 'incomplete':
+                print(
+                    f"ID: {task['id']}\n"
+                    f"Description:\n{task['desc']}"
+                    f"\n"
+                )
+    else:
+        print("Empty")
+
     print(
         f"\n\n"
         f"Completed tasks\n"
-        f"---------------\n"
+        f"---------------"
     )
-    for task in completed_tasks:
-        print(
-            f"ID: {task['id']}\n"
-            f"Description {task['desc']}"
-            f"\n"
-        )
+    if num_complete > 0:
+        for task in task_list:
+            if task['status'] == 'complete':
+                print(
+                    f"ID: {task['id']}\n"
+                    f"Description:\n{task['desc']}"
+                    f"\n"
+                )
+    else:
+        print("Empty")
 
 def complete_task(id):
     for task in task_list:
         if task['id'] == id:
-            completed_tasks.append(task)
-            task_list.remove(task)
+            task['status'] = 'complete'
             print(f"Task ID {id} marked as complete\n")
             return
     print("Task does not exist")
 
 def delete_task(task_id):
-    incomplete_id_list = [task['id'] for task in task_list]
-    completed_id_list = [task['id'] for task in completed_tasks]
-    if task_id in incomplete_id_list:
-        confirm = input(
-            f"Specified task currently incomplete\n"
-            f"Confirm deletion: Y/N\n"
-            f">>> "
-        )
-        if confirm.lower() in ['y','yes']:
-            for task in task_list:
-                if task['id'] == task_id:
-                    task_list.remove(task)
-                    print(f"Task {task_id} removed")
-                    break
-        elif confirm.lower() in ['n', 'no']:
-            print("Cancelling deletion...\n")
-        else:
-            print("Unrecognised response: cancelling deletion...\n")
-    elif task_id in completed_id_list:
-        for task in completed_tasks:
-                if task['id'] == task_id:
-                    completed_tasks.remove(task)
-                    break
-        print(f"Task deleted\n")
-    else:
-        print("Task ID does not exist\n")
+    for task in task_list:
+        if task['id'] == task_id:
+            if task['status'] == 'incomplete':
+                confirm = input(
+                    f"Specified task currently incomplete\n"
+                    f"Confirm deletion: Y/N\n"
+                    f">>> "
+                )
+                if confirm.lower() in ['y','yes']:
+                    for task in task_list:
+                        if task['id'] == task_id:
+                            task_list.remove(task)
+                            print(f"Task {task_id} deleted")
+                            break
+                elif confirm.lower() in ['n', 'no']:
+                    print("Cancelling deletion...\n")
+                else:
+                    print("Unrecognised response: cancelling deletion...\n")
+            else:
+                task_list.remove(task)
+                print(f"Task {task_id} deleted")
 
 def validate_id(id):
-    incomplete_id_list = [task['id'] for task in task_list]
-    completed_id_list = [task['id'] for task in completed_tasks]
+    id_list = [task['id'] for task in task_list]
     try:
-        if int(id) in incomplete_id_list or int(id) in completed_id_list:
+        if int(id) in id_list:
             return True
         print("No task with that ID")
         return False
