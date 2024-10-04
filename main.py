@@ -21,44 +21,34 @@ def add_task(desc, priority):
         'priority': priority.title()
     })
 
-def print_tasks(status):
+def list_tasks(status):
     print(
-        f"{status.title()} tasks\n"
-        f"----------------"
+    f"{status.title()} tasks\n"
+    f"----------------"
     )
+    task_count = 0
     for task in task_list:
         if task['status'] == status:
+            task_count += 1
             print(
                 f"ID: {task['id']}\n"
                 f"Description:\n{task['desc']}\n"
                 f"Priority: {task['priority']}"
                 f"\n"
             )
+    if task_count < 1:
+        print("Empty\n")
 
-
-def list_tasks():
-
-    num_incomplete = [task['status'] for task in task_list].count('incomplete')
-    num_complete = [task['status'] for task in task_list].count('complete')
-
-    print(
-        f"Incomplete tasks\n"
-        f"----------------"
-    )
-    if num_incomplete > 0:
-        print_tasks('incomplete')
-    else:
-        print("Empty")
-
-    print(
-        f"\n"
-        f"Completed tasks\n"
-        f"---------------"
-    )
-    if num_complete > 0:
-        print_tasks('complete')
-    else:
-        print("Empty")
+def print_single_task(id):
+    for task in task_list:
+        if task['id'] == id:
+            print(
+                f"ID: {task['id']}\n"
+                f"Description:\n{task['desc']}\n"
+                f"Priority: {task['priority']}"
+                f"Status: {task['status'].title()}"
+                f"\n"
+            )
 
 def complete_task(id):
     for task in task_list:
@@ -91,6 +81,44 @@ def delete_task(task_id):
                 task_list.remove(task)
                 print(f"Task {task_id} deleted")
 
+def select_priority():
+    priority = input(
+                f"Set priority: high, medium, low (defaults to low)\n"
+                f">>> "
+            )
+    if priority.lower() not in ['high', 'medium', 'h', 'm']:
+        priority = 'low'
+    if priority.lower() == 'h':
+        priority = 'high'
+    if priority.lower() == 'm':
+        priority = 'medium'
+    return priority.title()
+
+def update_task(id, key, value):
+    for task in task_list:
+        if task['id'] == id:
+            task[key] = value
+
+def modify_task(id):
+    print_single_task(id)
+    mod = input(
+        f"Would you like to change the description, or the priority?\n"
+        f"Type d or p, or anything else to cancel\n"
+        f">>> "
+    )
+    if mod.lower() == 'd':
+        desc = input(
+            f"Enter a new description"
+            f">>> "
+        )
+        update_task(id, 'desc', desc)
+    elif mod.lower() == 'p':
+        priority = select_priority()
+        update_task(id, 'priority', priority)
+    else:
+        print("Cancelling modification...")
+        return
+    
 def validate_id(id):
     id_list = [task['id'] for task in task_list]
     try:
@@ -106,33 +134,31 @@ def save_task_list():
     with open("tasks.json", 'w') as f:
         json.dump(task_list, f)
 
+def print_commands():
+    print(f"Commands: list, add, complete, delete, modify, quit\n")
+
 try:
     with open("tasks.json", 'r') as f:
         task_list = json.load(f)
 except FileNotFoundError:
         task_list = []
 
-print(
-    f"--------------- Task Manager --------------\n"
-    f"Commands: list, add, complete, delete, quit\n"
-)
+print(f"------------------- Task Manager ------------------\n")
+print_commands()
+
 
 while True:
     user_input = input(">>> ")
     match user_input.lower():
         case 'list' | 'l':
-            list_tasks()
+            list_tasks('incomplete')
+            list_tasks('complete')
         case 'add' | 'a':
             desc = input(
                 f"Write a task description\n"
                 f">>> "
             )
-            priority = input(
-                f"Set priority: high, medium, low (defaults to low)\n"
-                f">>> "
-            )
-            if priority.lower() not in ['high', 'medium', 'h', 'm']:
-                priority = 'low'
+            priority = select_priority()
             add_task(desc, priority.lower())
             save_task_list()
         case 'complete' | 'c':
@@ -151,11 +177,19 @@ while True:
             if validate_id(task_id):
                 delete_task(int(task_id))
             save_task_list()
+        case 'modify' | 'm':
+            task_id = input(
+                f"Please type the ID of the task you wish to modify:\n"
+                f">>> "
+            )
+            if validate_id(task_id):
+                modify_task(int(task_id))
+            save_task_list()
         case 'quit' | 'q':
             print("Goodbye")
             break
         case _:
-            print(
-            f"Unrecognised command\n"
-            f"Commands: list, add, complete, delete, quit\n"
-            )
+            print(f"Unrecognised command\n")
+            print_commands()
+            
+            
