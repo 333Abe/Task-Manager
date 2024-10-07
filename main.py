@@ -1,4 +1,5 @@
 import json
+from help_info import show_help
 
 def assign_id():
     id_list = [task['id'] for task in task_list]
@@ -135,7 +136,7 @@ def save_task_list():
         json.dump(task_list, f)
 
 def print_commands():
-    print(f"Commands: list, add, complete, delete, modify, quit\n")
+    print(f"Commands: list, add, complete, delete, modify, quit, help\n")
 
 try:
     with open("tasks.json", 'r') as f:
@@ -188,6 +189,8 @@ while True:
         case 'quit' | 'q':
             print("Goodbye")
             break
+        case 'help' | 'h':
+            show_help()
         case _:
             print(f"Unrecognised command\n")
             print_commands()
