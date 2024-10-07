@@ -7,6 +7,7 @@ def show_help():
         f"complete | c : marks a task as complete.\n"
         f"delete | d : Deletes a task.\n"
         f"modify | m : Modifys the description or priority of a task.\n"
+        f"order | o : Lists tasks ordered by priority.\n"
         f"quit | q : quits the program.\n"
         f"help | h : shows the help file.\n"
     )
