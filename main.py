@@ -44,12 +44,27 @@ def order_tasks():
     high_tasks = [task for task in task_list if task['priority'] == 'High']
     medium_tasks = [task for task in task_list if task['priority'] == 'Medium']
     low_tasks = [task for task in task_list if task['priority'] == 'Low']
-    for task in high_tasks:
-        print_single_task(task['id'])
-    for task in medium_tasks:
-        print_single_task(task['id'])
-    for task in low_tasks:
-        print_single_task(task['id'])
+    
+    print("--- High Priority Tasks ---")
+    if len(high_tasks) > 0:
+        for task in high_tasks:
+            print_single_task(task['id'])
+    else:
+        print("--- No High Priority Tasks ---\n")
+
+    print("--- Medium Priority Tasks ---")
+    if len(medium_tasks) > 0:
+        for task in medium_tasks:
+            print_single_task(task['id'])
+    else:
+        print("--- No Medium Priority Tasks ---\n")
+
+    print("--- Low Priority Tasks ---")
+    if len(low_tasks) > 0:
+        for task in low_tasks:
+            print_single_task(task['id'])
+    else:
+        print("--- No Low Priority Tasks ---\n")
 
 def print_single_task(id):
     for task in task_list:
