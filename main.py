@@ -40,13 +40,24 @@ def list_tasks(status):
     if task_count < 1:
         print("Empty\n")
 
+def order_tasks():
+    high_tasks = [task for task in task_list if task['priority'] == 'High']
+    medium_tasks = [task for task in task_list if task['priority'] == 'Medium']
+    low_tasks = [task for task in task_list if task['priority'] == 'Low']
+    for task in high_tasks:
+        print_single_task(task['id'])
+    for task in medium_tasks:
+        print_single_task(task['id'])
+    for task in low_tasks:
+        print_single_task(task['id'])
+
 def print_single_task(id):
     for task in task_list:
         if task['id'] == id:
             print(
                 f"ID: {task['id']}\n"
                 f"Description:\n{task['desc']}\n"
-                f"Priority: {task['priority']}"
+                f"Priority: {task['priority']}\n"
                 f"Status: {task['status'].title()}"
                 f"\n"
             )
@@ -59,9 +70,9 @@ def complete_task(id):
             return
     print("Task does not exist")
 
-def delete_task(task_id):
+def delete_task(id):
     for task in task_list:
-        if task['id'] == task_id:
+        if task['id'] == id:
             if task['status'] == 'incomplete':
                 confirm = input(
                     f"Specified task currently incomplete\n"
@@ -70,9 +81,9 @@ def delete_task(task_id):
                 )
                 if confirm.lower() in ['y','yes']:
                     for task in task_list:
-                        if task['id'] == task_id:
+                        if task['id'] == id:
                             task_list.remove(task)
-                            print(f"Task {task_id} deleted")
+                            print(f"Task {id} deleted")
                             break
                 elif confirm.lower() in ['n', 'no']:
                     print("Cancelling deletion...\n")
@@ -80,7 +91,7 @@ def delete_task(task_id):
                     print("Unrecognised response: cancelling deletion...\n")
             else:
                 task_list.remove(task)
-                print(f"Task {task_id} deleted")
+                print(f"Task {id} deleted")
 
 def select_priority():
     priority = input(
@@ -163,34 +174,36 @@ while True:
             add_task(desc, priority.lower())
             save_task_list()
         case 'complete' | 'c':
-            task_id = input(
+            id = input(
                 f"Please type the ID of the task you wish to mark as complete:\n"
                 f">>> "
             )
-            if validate_id(task_id):
-                complete_task(int(task_id))
+            if validate_id(id):
+                complete_task(int(id))
             save_task_list()
         case 'delete' | 'd':
-            task_id = input(
+            id = input(
                 f"Please type the ID of the task you wish to delete:\n"
                 f">>> "
             )
-            if validate_id(task_id):
-                delete_task(int(task_id))
+            if validate_id(id):
+                delete_task(int(id))
             save_task_list()
         case 'modify' | 'm':
-            task_id = input(
+            id = input(
                 f"Please type the ID of the task you wish to modify:\n"
                 f">>> "
             )
-            if validate_id(task_id):
-                modify_task(int(task_id))
+            if validate_id(id):
+                modify_task(int(id))
             save_task_list()
         case 'quit' | 'q':
             print("Goodbye")
             break
         case 'help' | 'h':
             show_help()
+        case 'order' | 'o':
+            order_tasks()
         case _:
             print(f"Unrecognised command\n")
             print_commands()
