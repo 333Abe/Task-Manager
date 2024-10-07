@@ -147,7 +147,7 @@ def save_task_list():
         json.dump(task_list, f)
 
 def print_commands():
-    print(f"Commands: list, add, complete, delete, modify, quit, help\n")
+    print(f"Commands: list, add, complete, delete, modify, order, quit, help\n")
 
 try:
     with open("tasks.json", 'r') as f:
