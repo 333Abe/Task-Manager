@@ -48,7 +48,7 @@ def order_tasks(priority):
     print(f"--- {convert_priority(priority)} Priority Tasks ---")
     for task in task_list:
         if task['priority'] == priority:
-            print_single_task(task['id'])
+            print_single_task(task)
             printed = True
     if printed == False:
         print(f"--- No {convert_priority(priority)} Priority Tasks ---\n")
@@ -64,7 +64,7 @@ def print_single_task(task):
 
 def complete_task(task):
     task['status'] = 'complete'
-    print(f"Task ID {id} marked as complete\n")
+    print(f"Task ID {task['id']} marked as complete\n")
     return
 
 def delete_task(task):
@@ -78,7 +78,7 @@ def delete_task(task):
             for task in task_list:
                 if task['id'] == id:
                     task_list.remove(task)
-                    print(f"Task {id} deleted")
+                    print(f"Task {task['id']} deleted")
                     break
         elif confirm.lower() in ['n', 'no']:
             print("Cancelling deletion...\n")
@@ -86,7 +86,7 @@ def delete_task(task):
             print("Unrecognised response: cancelling deletion...\n")
     else:
         task_list.remove(task)
-        print(f"Task {id} deleted")
+        print(f"Task {task['id']} deleted")
 
 def select_priority():
     priority = input(
@@ -133,8 +133,10 @@ def get_task_by_id(id):
     
 def validate_id(id):
     try:
-        if int(id):
-            return int(id)
+        id = int(id)
+        if id <= 0:
+            raise ValueError
+        return id
     except ValueError:
         print("Invalid ID")
         return False
@@ -176,33 +178,39 @@ while True:
                 f">>> "
             )
             id = validate_id(id)
-            if id:
-                task = get_task_by_id(id)
-                if task:
-                    complete_task(task)
-                    save_task_list()
+            if not id:
+                continue
+            task = get_task_by_id(id)
+            if not task:
+                continue
+            complete_task(task)
+            save_task_list()
         case 'delete' | 'd':
             id = input(
                 f"Please type the ID of the task you wish to delete:\n"
                 f">>> "
             )
             id = validate_id(id)
-            if id:
-                task = get_task_by_id(id)
-                if task:
-                    delete_task(task)
-                    save_task_list()
+            if not id:
+                continue
+            task = get_task_by_id(id)
+            if not task:
+                continue
+            delete_task(task)
+            save_task_list()
         case 'modify' | 'm':
             id = input(
                 f"Please type the ID of the task you wish to modify:\n"
                 f">>> "
             )
             id = validate_id(id)
-            if id:
-                task = get_task_by_id(id)
-                if task:
-                    modify_task(task)
-                    save_task_list()
+            if not id:
+                continue
+            task = get_task_by_id(id)
+            if not task:
+                continue
+            modify_task(task)
+            save_task_list()
         case 'quit' | 'q':
             print("Goodbye")
             break
