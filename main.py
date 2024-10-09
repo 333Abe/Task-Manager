@@ -53,47 +53,40 @@ def order_tasks(priority):
     if printed == False:
         print(f"--- No {convert_priority(priority)} Priority Tasks ---\n")
 
-def print_single_task(id):
-    for task in task_list:
-        if task['id'] == id:
-            print(
-                f"ID: {task['id']}\n"
-                f"Description:\n{task['desc']}\n"
-                f"Priority: {convert_priority(task['priority'])}\n"
-                f"Status: {task['status'].title()}"
-                f"\n"
-            )
+def print_single_task(task):
+    print(
+        f"ID: {task['id']}\n"
+        f"Description:\n{task['desc']}\n"
+        f"Priority: {convert_priority(task['priority'])}\n"
+        f"Status: {task['status'].title()}"
+        f"\n"
+    )
 
-def complete_task(id):
-    for task in task_list:
-        if task['id'] == id:
-            task['status'] = 'complete'
-            print(f"Task ID {id} marked as complete\n")
-            return
-    print("Task does not exist")
+def complete_task(task):
+    task['status'] = 'complete'
+    print(f"Task ID {id} marked as complete\n")
+    return
 
-def delete_task(id):
-    for task in task_list:
-        if task['id'] == id:
-            if task['status'] == 'incomplete':
-                confirm = input(
-                    f"Specified task currently incomplete\n"
-                    f"Confirm deletion: Y/N\n"
-                    f">>> "
-                )
-                if confirm.lower() in ['y','yes']:
-                    for task in task_list:
-                        if task['id'] == id:
-                            task_list.remove(task)
-                            print(f"Task {id} deleted")
-                            break
-                elif confirm.lower() in ['n', 'no']:
-                    print("Cancelling deletion...\n")
-                else:
-                    print("Unrecognised response: cancelling deletion...\n")
-            else:
-                task_list.remove(task)
-                print(f"Task {id} deleted")
+def delete_task(task):
+    if task['status'] == 'incomplete':
+        confirm = input(
+            f"Specified task currently incomplete\n"
+            f"Confirm deletion: Y/N\n"
+            f">>> "
+        )
+        if confirm.lower() in ['y','yes']:
+            for task in task_list:
+                if task['id'] == id:
+                    task_list.remove(task)
+                    print(f"Task {id} deleted")
+                    break
+        elif confirm.lower() in ['n', 'no']:
+            print("Cancelling deletion...\n")
+        else:
+            print("Unrecognised response: cancelling deletion...\n")
+    else:
+        task_list.remove(task)
+        print(f"Task {id} deleted")
 
 def select_priority():
     priority = input(
@@ -108,13 +101,11 @@ def select_priority():
         priority = 2
     return priority
 
-def update_task(id, key, value):
-    for task in task_list:
-        if task['id'] == id:
-            task[key] = value
+def update_task(task, key, value):
+    task[key] = value
 
-def modify_task(id):
-    print_single_task(id)
+def modify_task(task):
+    print_single_task(task)
     mod = input(
         f"Would you like to change the description, or the priority?\n"
         f"Type d or p, or anything else to cancel\n"
@@ -125,21 +116,25 @@ def modify_task(id):
             f"Enter a new description"
             f">>> "
         )
-        update_task(id, 'desc', desc)
+        update_task(task, 'desc', desc)
     elif mod.lower() == 'p':
         priority = select_priority()
-        update_task(id, 'priority', priority)
+        update_task(task, 'priority', priority)
     else:
         print("Cancelling modification...")
         return
     
+def get_task_by_id(id):
+    for task in task_list:
+        if task['id'] == id:
+            return task
+    print("No task with that ID")
+    return False
+    
 def validate_id(id):
-    id_list = [task['id'] for task in task_list]
     try:
-        if int(id) in id_list:
-            return True
-        print("No task with that ID")
-        return False
+        if int(id):
+            return int(id)
     except ValueError:
         print("Invalid ID")
         return False
@@ -180,25 +175,34 @@ while True:
                 f"Please type the ID of the task you wish to mark as complete:\n"
                 f">>> "
             )
-            if validate_id(id):
-                complete_task(int(id))
-            save_task_list()
+            id = validate_id(id)
+            if id:
+                task = get_task_by_id(id)
+                if task:
+                    complete_task(task)
+                    save_task_list()
         case 'delete' | 'd':
             id = input(
                 f"Please type the ID of the task you wish to delete:\n"
                 f">>> "
             )
-            if validate_id(id):
-                delete_task(int(id))
-            save_task_list()
+            id = validate_id(id)
+            if id:
+                task = get_task_by_id(id)
+                if task:
+                    delete_task(task)
+                    save_task_list()
         case 'modify' | 'm':
             id = input(
                 f"Please type the ID of the task you wish to modify:\n"
                 f">>> "
             )
-            if validate_id(id):
-                modify_task(int(id))
-            save_task_list()
+            id = validate_id(id)
+            if id:
+                task = get_task_by_id(id)
+                if task:
+                    modify_task(task)
+                    save_task_list()
         case 'quit' | 'q':
             print("Goodbye")
             break
