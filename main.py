@@ -10,17 +10,20 @@ def assign_id():
 
 def add_task(desc, priority):
     id = assign_id()
-    match priority:
-        case 'h':
-            priority = 'high'
-        case 'm':
-            priority ='medium'
     task_list.append({
         'id': id,
         'desc': desc,
         'status': 'incomplete',
-        'priority': priority.title()
+        'priority': priority
     })
+
+def convert_priority(priority):
+    if priority == 1:
+        return 'High'
+    if priority == 2:
+        return 'Medium'
+    if priority == 3:
+        return 'Low'
 
 def list_tasks(status):
     print(
@@ -34,37 +37,21 @@ def list_tasks(status):
             print(
                 f"ID: {task['id']}\n"
                 f"Description:\n{task['desc']}\n"
-                f"Priority: {task['priority']}"
+                f"Priority: {convert_priority(task['priority'])}"
                 f"\n"
             )
     if task_count < 1:
         print("Empty\n")
 
-def order_tasks():
-    high_tasks = [task for task in task_list if task['priority'] == 'High']
-    medium_tasks = [task for task in task_list if task['priority'] == 'Medium']
-    low_tasks = [task for task in task_list if task['priority'] == 'Low']
-    
-    print("--- High Priority Tasks ---")
-    if len(high_tasks) > 0:
-        for task in high_tasks:
+def order_tasks(priority):
+    printed = False
+    print(f"--- {convert_priority(priority)} Priority Tasks ---")
+    for task in task_list:
+        if task['priority'] == priority:
             print_single_task(task['id'])
-    else:
-        print("--- No High Priority Tasks ---\n")
-
-    print("--- Medium Priority Tasks ---")
-    if len(medium_tasks) > 0:
-        for task in medium_tasks:
-            print_single_task(task['id'])
-    else:
-        print("--- No Medium Priority Tasks ---\n")
-
-    print("--- Low Priority Tasks ---")
-    if len(low_tasks) > 0:
-        for task in low_tasks:
-            print_single_task(task['id'])
-    else:
-        print("--- No Low Priority Tasks ---\n")
+            printed = True
+    if printed == False:
+        print(f"--- No {convert_priority(priority)} Priority Tasks ---\n")
 
 def print_single_task(id):
     for task in task_list:
@@ -72,7 +59,7 @@ def print_single_task(id):
             print(
                 f"ID: {task['id']}\n"
                 f"Description:\n{task['desc']}\n"
-                f"Priority: {task['priority']}\n"
+                f"Priority: {convert_priority(task['priority'])}\n"
                 f"Status: {task['status'].title()}"
                 f"\n"
             )
@@ -114,12 +101,12 @@ def select_priority():
                 f">>> "
             )
     if priority.lower() not in ['high', 'medium', 'h', 'm']:
-        priority = 'low'
-    if priority.lower() == 'h':
-        priority = 'high'
-    if priority.lower() == 'm':
-        priority = 'medium'
-    return priority.title()
+        priority = 3
+    elif priority.lower() in ['h', 'high']:
+        priority = 1
+    elif priority.lower() in ['m', 'medium']:
+        priority = 2
+    return priority
 
 def update_task(id, key, value):
     for task in task_list:
@@ -186,7 +173,7 @@ while True:
                 f">>> "
             )
             priority = select_priority()
-            add_task(desc, priority.lower())
+            add_task(desc, priority)
             save_task_list()
         case 'complete' | 'c':
             id = input(
@@ -218,7 +205,9 @@ while True:
         case 'help' | 'h':
             show_help()
         case 'order' | 'o':
-            order_tasks()
+            order_tasks(1)
+            order_tasks(2)
+            order_tasks(3)
         case _:
             print(f"Unrecognised command\n")
             print_commands()
