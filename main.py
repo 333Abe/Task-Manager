@@ -75,11 +75,8 @@ def delete_task(task):
             f">>> "
         )
         if confirm.lower() in ['y','yes']:
-            for task in task_list:
-                if task['id'] == id:
-                    task_list.remove(task)
-                    print(f"Task {task['id']} deleted")
-                    break
+            task_list.remove(task)
+            print(f"Task {task['id']} deleted")
         elif confirm.lower() in ['n', 'no']:
             print("Cancelling deletion...\n")
         else:
@@ -129,7 +126,7 @@ def get_task_by_id(id):
         if task['id'] == id:
             return task
     print("No task with that ID")
-    return False
+    return None
     
 def validate_id(id):
     try:
