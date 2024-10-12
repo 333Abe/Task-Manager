@@ -1,8 +1,9 @@
 import json
 from help_info import show_help
+from task import Task
 
 def assign_id():
-    id_list = [task['id'] for task in task_list]
+    id_list = [task.get_id() for task in task_list]
     try:
         return max(id_list) + 1
     except ValueError:
@@ -10,12 +11,8 @@ def assign_id():
 
 def add_task(desc, priority):
     id = assign_id()
-    task_list.append({
-        'id': id,
-        'desc': desc,
-        'status': 'incomplete',
-        'priority': priority
-    })
+    task = Task(id, desc,'incomplete', priority )
+    task_list.append(task)
 
 def convert_priority(priority):
     if priority == 1:
@@ -32,12 +29,12 @@ def list_tasks(status):
     )
     task_count = 0
     for task in task_list:
-        if task['status'] == status:
+        if task.get_status() == status:
             task_count += 1
             print(
-                f"ID: {task['id']}\n"
-                f"Description:\n{task['desc']}\n"
-                f"Priority: {convert_priority(task['priority'])}"
+                f"ID: {task.get_id()}\n"
+                f"Description:\n{task.get_desc()}\n"
+                f"Priority: {convert_priority(task.get_priority())}"
                 f"\n"
             )
     if task_count < 1:
@@ -47,7 +44,7 @@ def order_tasks(priority):
     printed = False
     print(f"--- {convert_priority(priority)} Priority Tasks ---")
     for task in task_list:
-        if task['priority'] == priority:
+        if task.get_priority() == priority:
             print_single_task(task)
             printed = True
     if printed == False:
@@ -55,35 +52,32 @@ def order_tasks(priority):
 
 def print_single_task(task):
     print(
-        f"ID: {task['id']}\n"
-        f"Description:\n{task['desc']}\n"
-        f"Priority: {convert_priority(task['priority'])}\n"
-        f"Status: {task['status'].title()}"
+        f"ID: {task.get_id()}\n"
+        f"Description:\n{task.get_desc()}\n"
+        f"Priority: {convert_priority(task.get_priority())}\n"
+        f"Status: {task.get_status().title()}"
         f"\n"
     )
 
-def complete_task(task):
-    task['status'] = 'complete'
-    print(f"Task ID {task['id']} marked as complete\n")
-    return
-
 def delete_task(task):
-    if task['status'] == 'incomplete':
-        confirm = input(
-            f"Specified task currently incomplete\n"
-            f"Confirm deletion: Y/N\n"
-            f">>> "
-        )
-        if confirm.lower() in ['y','yes']:
-            task_list.remove(task)
-            print(f"Task {task['id']} deleted")
-        elif confirm.lower() in ['n', 'no']:
-            print("Cancelling deletion...\n")
+        if task.get_status() == 'incomplete':
+            confirm = input(
+                f"Specified task currently incomplete\n"
+                f"Confirm deletion: Y/N\n"
+                f">>> "
+            )
+            if confirm.lower() in ['y','yes']:
+                task_list.remove(task)
+                print(f"Task {task.get_id()} deleted")
+                task.delete_task()
+            elif confirm.lower() in ['n', 'no']:
+                print("Cancelling deletion...\n")
+            else:
+                print("Unrecognised response: cancelling deletion...\n")
         else:
-            print("Unrecognised response: cancelling deletion...\n")
-    else:
-        task_list.remove(task)
-        print(f"Task {task['id']} deleted")
+            task_list.remove(task)
+            print(f"Task {task.get_id()} deleted")
+            task.delete_task()
 
 def select_priority():
     priority = input(
@@ -98,9 +92,6 @@ def select_priority():
         priority = 2
     return priority
 
-def update_task(task, key, value):
-    task[key] = value
-
 def modify_task(task):
     print_single_task(task)
     mod = input(
@@ -113,17 +104,17 @@ def modify_task(task):
             f"Enter a new description"
             f">>> "
         )
-        update_task(task, 'desc', desc)
+        task.set_desc(desc)
     elif mod.lower() == 'p':
         priority = select_priority()
-        update_task(task, 'priority', priority)
+        task.set_priority(priority)
     else:
         print("Cancelling modification...")
         return
     
 def get_task_by_id(id):
     for task in task_list:
-        if task['id'] == id:
+        if task.get_id() == id:
             return task
     print("No task with that ID")
     return None
@@ -139,15 +130,23 @@ def validate_id(id):
         return False
 
 def save_task_list():
+    save_list =[]
+    for task in task_list:
+        x = {'id': task.get_id(), 'desc': task.get_desc(), 'status': task.get_status(), 'priority': task.get_priority()}
+        save_list.append(x)
     with open("tasks.json", 'w') as f:
-        json.dump(task_list, f)
+        json.dump(save_list, f)
 
 def print_commands():
     print(f"Commands: list, add, complete, delete, modify, order, quit, help\n")
 
 try:
     with open("tasks.json", 'r') as f:
-        task_list = json.load(f)
+        load_list = json.load(f)
+        task_list = []
+        for task in load_list:
+            x = Task(task['id'], task['desc'], task['status'], task['priority'])
+            task_list.append(x)
 except FileNotFoundError:
         task_list = []
 
@@ -180,7 +179,7 @@ while True:
             task = get_task_by_id(id)
             if not task:
                 continue
-            complete_task(task)
+            task.mark_complete()
             save_task_list()
         case 'delete' | 'd':
             id = input(
