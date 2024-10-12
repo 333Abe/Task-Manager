@@ -32,3 +32,11 @@ class Task:
     
     def delete_task(self):
         del self
+    
+    def to_dict(self):
+        return {
+            'id': self._id,
+            'desc': self._desc,
+            'status': self._status,
+            'priority': self._priority
+        }

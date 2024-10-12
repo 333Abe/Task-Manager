@@ -132,7 +132,7 @@ def validate_id(id):
 def save_task_list():
     save_list =[]
     for task in task_list:
-        x = {'id': task.get_id(), 'desc': task.get_desc(), 'status': task.get_status(), 'priority': task.get_priority()}
+        x = task.to_dict()
         save_list.append(x)
     with open("tasks.json", 'w') as f:
         json.dump(save_list, f)
