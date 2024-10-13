@@ -2,8 +2,8 @@ from task import Task
 import json
 
 class TaskManager():
-    def __init__(self, task_list):
-        self._task_list = task_list
+    def __init__(self):
+        self._task_list = []
 
     def load_task_list(self):
         try:

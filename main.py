@@ -15,7 +15,7 @@ def validate_id(id):
 def print_commands():
     print(f"Commands: list, add, complete, delete, modify, order, quit, help\n")
 
-task_manager = TaskManager([])
+task_manager = TaskManager()
 task_manager.load_task_list()
 
 print(f"------------------- Task Manager ------------------\n")
