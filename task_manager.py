@@ -39,19 +39,19 @@ class TaskManager():
         )
         task_count = 0
         for task in self._task_list:
-            if task.get_status() == status:
+            if task.status == status:
                 task_count += 1
                 print(
-                    f"ID: {task.get_id()}\n"
-                    f"Description:\n{task.get_desc()}\n"
-                    f"Priority: {self._convert_priority(task.get_priority())}"
+                    f"ID: {task.id}\n"
+                    f"Description:\n{task.desc}\n"
+                    f"Priority: {self._convert_priority(task.priority)}"
                     f"\n"
                 )
         if task_count < 1:
             print("Empty\n")
     
     def _assign_id(self):
-        id_list = [task.get_id() for task in self._task_list]
+        id_list = [task.id for task in self._task_list]
         try:
             return max(id_list) + 1
         except ValueError:
@@ -64,13 +64,13 @@ class TaskManager():
     
     def get_task_by_id(self, id):
         for task in self._task_list:
-            if task.get_id() == id:
+            if task.id == id:
                 return task
         print("No task with that ID")
         return None
     
     def delete_task(self, task):
-        if task.get_status() == 'incomplete':
+        if task.status == 'incomplete':
             confirm = input(
                 f"Specified task currently incomplete\n"
                 f"Confirm deletion: Y/N\n"
@@ -78,7 +78,7 @@ class TaskManager():
             )
             if confirm.lower() in ['y','yes']:
                 self._task_list.remove(task)
-                print(f"Task {task.get_id()} deleted")
+                print(f"Task {task.id} deleted")
                 task.delete_task()
             elif confirm.lower() in ['n', 'no']:
                 print("Cancelling deletion...\n")
@@ -86,15 +86,15 @@ class TaskManager():
                 print("Unrecognised response: cancelling deletion...\n")
         else:
             self._task_list.remove(task)
-            print(f"Task {task.get_id()} deleted")
+            print(f"Task {task.id} deleted")
             task.delete_task()
     
     def _print_single_task(self, task):
         print(
-            f"ID: {task.get_id()}\n"
-            f"Description:\n{task.get_desc()}\n"
-            f"Priority: {self._convert_priority(task.get_priority())}\n"
-            f"Status: {task.get_status().title()}"
+            f"ID: {task.id}\n"
+            f"Description:\n{task.desc}\n"
+            f"Priority: {self._convert_priority(task.priority)}\n"
+            f"Status: {task.status.title()}"
             f"\n"
         )
     
@@ -123,10 +123,10 @@ class TaskManager():
                 f"Enter a new description"
                 f">>> "
             )
-            task.set_desc(desc)
+            task.desc = desc
         elif mod.lower() == 'p':
             priority = self.select_priority()
-            task.set_priority(priority)
+            task.priority = priority
         else:
             print("Cancelling modification...")
             return
@@ -135,7 +135,7 @@ class TaskManager():
         printed = False
         print(f"--- {self._convert_priority(priority)} Priority Tasks ---")
         for task in self._task_list:
-            if task.get_priority() == priority:
+            if task.priority == priority:
                 self._print_single_task(task)
                 printed = True
         if printed == False:

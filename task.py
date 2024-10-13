@@ -5,30 +5,37 @@ class Task:
         self._status = status
         self._priority = priority
 
-    def get_id(self):
+    @property
+    def id(self):
         return self._id
 
-    def get_desc(self):
+    @property
+    def desc(self):
         return self._desc
     
-    def set_desc(self, new_desc):
+    @desc.setter
+    def desc(self, new_desc):
         self._desc = new_desc
     
-    def get_status(self):
+    @property
+    def status(self):
         return self._status
     
-    def set_status(self, new_status):
+    @status.setter
+    def status(self, new_status):
         self._status = new_status
     
-    def get_priority(self):
+    @property
+    def priority(self):
         return self._priority
     
-    def set_priority(self, new_priority):
+    @priority.setter
+    def priority(self, new_priority):
         self._priority = new_priority
     
     def mark_complete(self):
-        self.set_status('complete')
-        print(f"Task ID {self.get_id()} marked as complete\n")
+        self.status = 'complete'
+        print(f"Task ID {self.id} marked as complete\n")
     
     def delete_task(self):
         del self
