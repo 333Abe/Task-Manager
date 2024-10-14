@@ -32,24 +32,6 @@ class TaskManager():
         if priority == 3:
             return 'Low'
     
-    def list_tasks(self, status):
-        print(
-        f"{status.title()} tasks\n"
-        f"----------------"
-        )
-        task_count = 0
-        for task in self._task_list:
-            if task.status == status:
-                task_count += 1
-                print(
-                    f"ID: {task.id}\n"
-                    f"Description:\n{task.desc}\n"
-                    f"Priority: {self._convert_priority(task.priority)}"
-                    f"\n"
-                )
-        if task_count < 1:
-            print("Empty\n")
-    
     def _assign_id(self):
         id_list = [task.id for task in self._task_list]
         try:
@@ -66,25 +48,16 @@ class TaskManager():
         for task in self._task_list:
             if task.id == id:
                 return task
-        print("No task with that ID")
         return None
     
     def delete_task(self, task):
-        if task.status == 'incomplete':
-            confirm = input(
-                f"Specified task currently incomplete\n"
-                f"Confirm deletion: Y/N\n"
-                f">>> "
-            )
-            if confirm.lower() in ['y','yes']:
-                self._task_list.remove(task)
-                print(f"Task {task.id} deleted")
-                task.delete_task()
-            elif confirm.lower() in ['n', 'no']:
-                print("Cancelling deletion...\n")
-            else:
-                print("Unrecognised response: cancelling deletion...\n")
-        else:
+        self._print_single_task(task)
+        confirm = input(
+            f"\n"
+            f"Confirm deletion: Y/N\n"
+            f">>> "
+        )
+        if confirm.lower() in ['y','yes']:
             self._task_list.remove(task)
             print(f"Task {task.id} deleted")
             task.delete_task()
@@ -98,38 +71,37 @@ class TaskManager():
             f"\n"
         )
     
-    def select_priority(self):
-        priority = input(
-                    f"Set priority: high, medium, low (defaults to low)\n"
-                    f">>> "
-                )
-        if priority.lower() not in ['high', 'medium', 'h', 'm']:
-            priority = 3
-        elif priority.lower() in ['h', 'high']:
-            priority = 1
-        elif priority.lower() in ['m', 'medium']:
-            priority = 2
-        return priority
+    # def select_priority(self):
+    #     priority = input(
+    #                 f"Set priority: high, medium, low (defaults to low)\n"
+    #                 f">>> "
+    #             )
+    #     if priority.lower() not in ['high', 'medium', 'h', 'm']:
+    #         priority = 3
+    #     elif priority.lower() in ['h', 'high']:
+    #         priority = 1
+    #     elif priority.lower() in ['m', 'medium']:
+    #         priority = 2
+    #     return priority
     
-    def modify_task(self, task):
-        self._print_single_task(task)
-        mod = input(
-            f"Would you like to change the description, or the priority?\n"
-            f"Type d or p, or anything else to cancel\n"
-            f">>> "
+    def modify_task_description(self, task, desc):
+        task.desc = desc
+
+    def modify_task_priority(self, task, priority):
+        task.priority = priority
+
+    def list_tasks(self, status):
+        print(
+        f"{status.title()} tasks\n"
+        f"----------------"
         )
-        if mod.lower() == 'd':
-            desc = input(
-                f"Enter a new description"
-                f">>> "
-            )
-            task.desc = desc
-        elif mod.lower() == 'p':
-            priority = self.select_priority()
-            task.priority = priority
-        else:
-            print("Cancelling modification...")
-            return
+        task_count = 0
+        for task in self._task_list:
+            if task.status == status:
+                task_count += 1
+                self._print_single_task(task)
+        if task_count < 1:
+            print("Empty\n")
     
     def order_tasks(self, priority):
         printed = False
@@ -140,3 +112,14 @@ class TaskManager():
                 printed = True
         if printed == False:
             print(f"--- No {self._convert_priority(priority)} Priority Tasks ---\n")
+    
+    def list_tasks_by_status(self):
+        self.list_tasks('incomplete')
+        self.list_tasks('complete')
+        return
+
+    def list_tasks_by_priority(self):
+        self.order_tasks(1)
+        self.order_tasks(2)
+        self.order_tasks(3)
+        return
