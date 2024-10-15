@@ -136,9 +136,16 @@ def input_parser(user_input):
             task = return_task(id)
             if not task:
                 return True
-            delete_command = DeleteTaskCommand(task_manager, task)
-            delete_command.execute()
-            task_manager.save_task_list()
+            task_manager.print_single_task(task)
+            confirm = input(
+                f"\n"
+                f"Confirm deletion: Y/N\n"
+                f">>> "
+            )
+            if confirm.lower() in ['y','yes']:
+                delete_command = DeleteTaskCommand(task_manager, task)
+                delete_command.execute()
+                task_manager.save_task_list()
             return True
         print("Invalid option(s) for 'delete task' function. Type 'help' for more information.")
         return True
@@ -151,7 +158,7 @@ def input_parser(user_input):
     
 
 task_manager = TaskManager()
-task_manager.load_task_list()
+print(task_manager.load_task_list())
 operate = True
 
 print(f"------------------- Task Manager ------------------\n")

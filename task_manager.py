@@ -12,9 +12,9 @@ class TaskManager():
                 for task in load_list:
                     x = Task(task['id'], task['desc'], task['status'], task['priority'])
                     self._task_list.append(x)
-                print("Tasks loaded")
+                return "Tasks loaded"
         except FileNotFoundError:
-                print("No tasks loaded")
+                return "No tasks loaded"
 
     def save_task_list(self):
         save_list =[]
@@ -51,18 +51,10 @@ class TaskManager():
         return None
     
     def delete_task(self, task):
-        self._print_single_task(task)
-        confirm = input(
-            f"\n"
-            f"Confirm deletion: Y/N\n"
-            f">>> "
-        )
-        if confirm.lower() in ['y','yes']:
-            self._task_list.remove(task)
-            print(f"Task {task.id} deleted")
-            task.delete_task()
+        self._task_list.remove(task)
+        task.delete_task()
     
-    def _print_single_task(self, task):
+    def print_single_task(self, task):
         print(
             f"ID: {task.id}\n"
             f"Description:\n{task.desc}\n"
@@ -89,7 +81,7 @@ class TaskManager():
         for task in self._task_list:
             if task.status == status:
                 task_count += 1
-                self._print_single_task(task)
+                self.print_single_task(task)
         if task_count < 1:
             print("Empty\n")
     
@@ -98,7 +90,7 @@ class TaskManager():
         print(f"--- {self._convert_priority(priority)} Priority Tasks ---")
         for task in self._task_list:
             if task.priority == priority:
-                self._print_single_task(task)
+                self.print_single_task(task)
                 printed = True
         if printed == False:
             print(f"--- No {self._convert_priority(priority)} Priority Tasks ---\n")
