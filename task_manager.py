@@ -5,6 +5,12 @@ class TaskManager():
     def __init__(self):
         self._task_list = []
 
+    PRIORITY_MAP = {
+        1: 'High',
+        2: 'Medium',
+        3: 'Low'
+    }
+
     def load_task_list(self):
         try:
             with open("tasks.json", 'r') as f:
@@ -23,14 +29,6 @@ class TaskManager():
             save_list.append(x)
         with open("tasks.json", 'w') as f:
             json.dump(save_list, f)
-
-    def _convert_priority(self, priority):
-        if priority == 1:
-            return 'High'
-        if priority == 2:
-            return 'Medium'
-        if priority == 3:
-            return 'Low'
     
     def _assign_id(self):
         id_list = [task.id for task in self._task_list]
@@ -58,7 +56,7 @@ class TaskManager():
         print(
             f"ID: {task.id}\n"
             f"Description:\n{task.desc}\n"
-            f"Priority: {self._convert_priority(task.priority)}\n"
+            f"Priority: {self.PRIORITY_MAP[task.priority]}\n"
             f"Status: {task.status.title()}"
             f"\n"
         )
@@ -87,13 +85,13 @@ class TaskManager():
     
     def order_tasks(self, priority):
         printed = False
-        print(f"--- {self._convert_priority(priority)} Priority Tasks ---")
+        print(f"--- {self.PRIORITY_MAP[priority]} Priority Tasks ---")
         for task in self._task_list:
             if task.priority == priority:
                 self.print_single_task(task)
                 printed = True
         if printed == False:
-            print(f"--- No {self._convert_priority(priority)} Priority Tasks ---\n")
+            print(f"--- No {self.PRIORITY_MAP[priority]} Priority Tasks ---\n")
     
     def list_tasks_by_status(self):
         self.list_tasks('incomplete')
