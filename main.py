@@ -1,5 +1,6 @@
 from help_info import show_help
 from task_manager import TaskManager
+from commands import AddTaskCommand, DeleteTaskCommand, CompleteTaskCommand, ListTasksByPriorityCommand, ListTasksByStatusCommand, ModifyTaskPriorityCommand, ModifyTaskDescriptionCommand
 
 priority_dict = {
     'h': 1,
@@ -65,26 +66,31 @@ def input_parser(user_input):
     if command[0] == 'list' or command[0] == 'l':
         if len(command) == 2:
             if command[1] == 's' or command[1] == 'status':
-                task_manager.list_tasks_by_status()
+                list_command = ListTasksByStatusCommand(task_manager)
+                list_command.execute()
                 return True
             if command[1] == 'p' or command[1] == 'priority':
-                task_manager.list_tasks_by_priority()
+                list_command = ListTasksByPriorityCommand(task_manager)
+                list_command.execute()
                 return True
         print("Invalid option(s) for 'list' function. Type 'help' for more information.")
         return True
         
     if command[0] == 'ls':
-        task_manager.list_tasks_by_status()
+        list_command = ListTasksByStatusCommand(task_manager)
+        list_command.execute()
         return True
     if command[0] == 'lp':
-        task_manager.list_tasks_by_priority()
+        list_command = ListTasksByPriorityCommand(task_manager)
+        list_command.execute()
         return True
 
     if command[0] == 'add' or command[0] == 'a':
         if len(command) == 3 and command[2] in priority_dict.keys():
             desc = command[1]
             priority = priority_dict[command[2]]
-            task_manager.add_task(desc, priority)
+            add_command = AddTaskCommand(task_manager, desc, priority)
+            add_command.execute()
             task_manager.save_task_list()
             return True
         print("Invalid option(s) for 'add task' function. Type 'help' for more information.")
@@ -96,7 +102,8 @@ def input_parser(user_input):
             task = return_task(id)
             if not task:
                 return True
-            task.mark_complete()
+            complete_command = CompleteTaskCommand(task)
+            complete_command.execute()
             task_manager.save_task_list()
             return True
         print("Invalid option(s) for 'complete task' function. Type 'help' for more information.")
@@ -110,12 +117,14 @@ def input_parser(user_input):
                 return True
             if command[2] == 'd':
                 desc = command[3]
-                task_manager.modify_task_description(task, desc)
+                mod_desc_command = ModifyTaskDescriptionCommand(task_manager, task, desc)
+                mod_desc_command.execute()
                 task_manager.save_task_list()
                 return True
             if command[2] == 'p' and command[3] in priority_dict.keys():
                 priority = priority_dict[command[3]]
-                task_manager.modify_task_priority(task, priority)
+                mod_desc_command = ModifyTaskPriorityCommand(task_manager, task, priority)
+                mod_desc_command.execute()
                 task_manager.save_task_list()
                 return True
         print("Invalid option(s) for 'modify task' function. Type 'help' for more information.")
@@ -127,7 +136,8 @@ def input_parser(user_input):
             task = return_task(id)
             if not task:
                 return True
-            task_manager.delete_task(task)
+            delete_command = DeleteTaskCommand(task_manager, task)
+            delete_command.execute()
             task_manager.save_task_list()
             return True
         print("Invalid option(s) for 'delete task' function. Type 'help' for more information.")
