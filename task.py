@@ -35,7 +35,6 @@ class Task:
     
     def mark_complete(self):
         self.status = 'complete'
-        print(f"Task ID {self.id} marked as complete\n")
     
     def to_dict(self):
         return {
