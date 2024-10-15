@@ -37,9 +37,6 @@ class Task:
         self.status = 'complete'
         print(f"Task ID {self.id} marked as complete\n")
     
-    def delete_task(self):
-        del self
-    
     def to_dict(self):
         return {
             'id': self._id,

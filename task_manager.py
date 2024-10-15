@@ -50,7 +50,6 @@ class TaskManager():
     
     def delete_task(self, task):
         self._task_list.remove(task)
-        task.delete_task()
     
     def print_single_task(self, task):
         print(
