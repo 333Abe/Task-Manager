@@ -45,7 +45,7 @@ def split_user_input(user_input):
     command_list.append(command)
     return command_list
 
-def return_task(id):
+def return_task(id, task_manager):
     id = validate_id(id)
     if not id:
         print("Invalid id. Type 'help for more information.")
@@ -56,7 +56,7 @@ def return_task(id):
         return False
     return task
 
-def input_parser(user_input):
+def input_parser(user_input, task_manager):
     command = split_user_input(user_input)
     
     if command[0] not in ['list', 'l', 'lp', 'ls', 'add', 'a', 'complete', 'c', 'modify', 'm', 'delete', 'd', 'quit', 'q', 'help', 'h']:
@@ -98,7 +98,7 @@ def input_parser(user_input):
     if command[0] == 'complete' or command[0] == 'c':
         if len(command) == 2:
             id = command[1]
-            task = return_task(id)
+            task = return_task(id, task_manager)
             if not task:
                 return True
             complete_command = CompleteTaskCommand(task_manager, task)
@@ -110,7 +110,7 @@ def input_parser(user_input):
     if command[0] == 'modify' or command[0] == 'm':
         if len(command) == 4:
             id = command[1]
-            task = return_task(id)
+            task = return_task(id, task_manager)
             if not task:
                 return True
             if command[2] == 'd':
@@ -129,7 +129,7 @@ def input_parser(user_input):
     if command[0] == 'delete' or command[0] == 'd':
         if len(command) == 2:
             id = command[1]
-            task = return_task(id)
+            task = return_task(id, task_manager)
             if not task:
                 return True
             task_manager.print_single_task(task)
@@ -151,19 +151,21 @@ def input_parser(user_input):
     if command[0] == 'quit' or command[0] == 'q':
         return False
     
+def main():
+    task_manager = TaskManager()
+    print(task_manager.load_task_list())
+    operate = True
 
-task_manager = TaskManager()
-print(task_manager.load_task_list())
-operate = True
+    print(f"------------------- Task Manager ------------------\n")
+    print_commands()
 
-print(f"------------------- Task Manager ------------------\n")
-print_commands()
+    while True:
+        user_input = input(">>> ")
+        operate = input_parser(user_input, task_manager)
+        task_manager.save_task_list()
+        if operate == False:
+            break
 
-while True:
-    user_input = input(">>> ")
-    operate = input_parser(user_input)
-    task_manager.save_task_list()
-    if operate == False:
-        break
-            
+if __name__ == '__main__':
+    main()
             
