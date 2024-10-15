@@ -58,7 +58,7 @@ def return_task(id):
 
 def input_parser(user_input):
     command = split_user_input(user_input)
-    print(f"Command: {command}")
+    
     if command[0] not in ['list', 'l', 'lp', 'ls', 'add', 'a', 'complete', 'c', 'modify', 'm', 'delete', 'd', 'quit', 'q', 'help', 'h']:
         print("Unrecognised command. Type 'help' for more information.")
         return True
