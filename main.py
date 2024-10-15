@@ -123,8 +123,8 @@ def input_parser(user_input):
                 return True
             if command[2] == 'p' and command[3] in priority_dict.keys():
                 priority = priority_dict[command[3]]
-                mod_desc_command = ModifyTaskPriorityCommand(task_manager, task, priority)
-                mod_desc_command.execute()
+                mod_priority_command = ModifyTaskPriorityCommand(task_manager, task, priority)
+                mod_priority_command.execute()
                 task_manager.save_task_list()
                 return True
         print("Invalid option(s) for 'modify task' function. Type 'help' for more information.")
