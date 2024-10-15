@@ -15,11 +15,12 @@ class AddTaskCommand(Command):
         self.task_manager.add_task(self.desc, self.priority)
 
 class CompleteTaskCommand(Command):
-    def __init__(self, task):
+    def __init__(self, task_manager, task):
+        self.task_manager = task_manager
         self.task = task
     
     def execute(self):
-        self.task.mark_complete()
+        self.task_manager.mark_complete(self.task)
 
 class DeleteTaskCommand(Command):
     def __init__(self, task_manager, task):

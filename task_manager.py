@@ -71,24 +71,14 @@ class TaskManager():
             f"\n"
         )
     
-    # def select_priority(self):
-    #     priority = input(
-    #                 f"Set priority: high, medium, low (defaults to low)\n"
-    #                 f">>> "
-    #             )
-    #     if priority.lower() not in ['high', 'medium', 'h', 'm']:
-    #         priority = 3
-    #     elif priority.lower() in ['h', 'high']:
-    #         priority = 1
-    #     elif priority.lower() in ['m', 'medium']:
-    #         priority = 2
-    #     return priority
-    
     def modify_task_description(self, task, desc):
         task.desc = desc
 
     def modify_task_priority(self, task, priority):
         task.priority = priority
+
+    def mark_complete(self, task):
+        task.mark_complete()
 
     def list_tasks(self, status):
         print(

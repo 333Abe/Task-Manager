@@ -102,7 +102,7 @@ def input_parser(user_input):
             task = return_task(id)
             if not task:
                 return True
-            complete_command = CompleteTaskCommand(task)
+            complete_command = CompleteTaskCommand(task_manager, task)
             complete_command.execute()
             task_manager.save_task_list()
             return True
