@@ -91,7 +91,6 @@ def input_parser(user_input):
             priority = priority_dict[command[2]]
             add_command = AddTaskCommand(task_manager, desc, priority)
             add_command.execute()
-            task_manager.save_task_list()
             return True
         print("Invalid option(s) for 'add task' function. Type 'help' for more information.")
         return True
@@ -104,7 +103,6 @@ def input_parser(user_input):
                 return True
             complete_command = CompleteTaskCommand(task_manager, task)
             complete_command.execute()
-            task_manager.save_task_list()
             return True
         print("Invalid option(s) for 'complete task' function. Type 'help' for more information.")
         return True
@@ -119,13 +117,11 @@ def input_parser(user_input):
                 desc = command[3]
                 mod_desc_command = ModifyTaskDescriptionCommand(task_manager, task, desc)
                 mod_desc_command.execute()
-                task_manager.save_task_list()
                 return True
             if command[2] == 'p' and command[3] in priority_dict.keys():
                 priority = priority_dict[command[3]]
                 mod_priority_command = ModifyTaskPriorityCommand(task_manager, task, priority)
                 mod_priority_command.execute()
-                task_manager.save_task_list()
                 return True
         print("Invalid option(s) for 'modify task' function. Type 'help' for more information.")
         return True
@@ -145,7 +141,6 @@ def input_parser(user_input):
             if confirm.lower() in ['y','yes']:
                 delete_command = DeleteTaskCommand(task_manager, task)
                 delete_command.execute()
-                task_manager.save_task_list()
             return True
         print("Invalid option(s) for 'delete task' function. Type 'help' for more information.")
         return True
@@ -167,6 +162,7 @@ print_commands()
 while True:
     user_input = input(">>> ")
     operate = input_parser(user_input)
+    task_manager.save_task_list()
     if operate == False:
         break
             
