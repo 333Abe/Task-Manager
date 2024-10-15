@@ -2,7 +2,7 @@ from help_info import show_help
 from task_manager import TaskManager
 from commands import AddTaskCommand, DeleteTaskCommand, CompleteTaskCommand, ListTasksByPriorityCommand, ListTasksByStatusCommand, ModifyTaskPriorityCommand, ModifyTaskDescriptionCommand
 
-priority_dict = {
+PRIORITY_MAP = {
     'h': 1,
     'high': 1,
     'm': 2,
@@ -86,9 +86,9 @@ def input_parser(user_input):
         return True
 
     if command[0] == 'add' or command[0] == 'a':
-        if len(command) == 3 and command[2] in priority_dict.keys():
+        if len(command) == 3 and command[2] in PRIORITY_MAP.keys():
             desc = command[1]
-            priority = priority_dict[command[2]]
+            priority = PRIORITY_MAP[command[2]]
             add_command = AddTaskCommand(task_manager, desc, priority)
             add_command.execute()
             return True
@@ -118,8 +118,8 @@ def input_parser(user_input):
                 mod_desc_command = ModifyTaskDescriptionCommand(task_manager, task, desc)
                 mod_desc_command.execute()
                 return True
-            if command[2] == 'p' and command[3] in priority_dict.keys():
-                priority = priority_dict[command[3]]
+            if command[2] == 'p' and command[3] in PRIORITY_MAP.keys():
+                priority = PRIORITY_MAP[command[3]]
                 mod_priority_command = ModifyTaskPriorityCommand(task_manager, task, priority)
                 mod_priority_command.execute()
                 return True
