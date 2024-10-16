@@ -82,23 +82,39 @@ class TaskManager():
         if task_count < 1:
             print("Empty\n")
     
-    def order_tasks(self, priority):
-        printed = False
-        print(f"--- {self.PRIORITY_MAP[priority]} Priority Tasks ---")
-        for task in self._task_list:
-            if task.priority == priority:
-                self.print_single_task(task)
-                printed = True
-        if printed == False:
-            print(f"--- No {self.PRIORITY_MAP[priority]} Priority Tasks ---\n")
+    # def order_tasks(self, priority):
+    #     for priority in range(1,4):
+    #         printed = False
+    #         print(f"--- {self.PRIORITY_MAP[priority]} Priority Tasks ---")
+    #         for task in self._task_list:
+    #             if task.priority == priority:
+    #                 self.print_single_task(task)
+    #                 printed = True
+    #         if printed == False:
+    #             print(f"--- No {self.PRIORITY_MAP[priority]} Priority Tasks ---\n")
     
     def list_tasks_by_status(self):
-        self.list_tasks('incomplete')
-        self.list_tasks('complete')
-        return
+        statuses = ['incomplete', 'complete']
+        for status in statuses:
+            print(
+            f"{status.title()} tasks\n"
+            f"----------------"
+            )
+            task_count = 0
+            for task in self._task_list:
+                if task.status == status:
+                    task_count += 1
+                    self.print_single_task(task)
+            if task_count < 1:
+                print("Empty\n")
 
     def list_tasks_by_priority(self):
-        self.order_tasks(1)
-        self.order_tasks(2)
-        self.order_tasks(3)
-        return
+        for priority in range(1,4):
+            printed = False
+            print(f"--- {self.PRIORITY_MAP[priority]} Priority Tasks ---")
+            for task in self._task_list:
+                if task.priority == priority:
+                    self.print_single_task(task)
+                    printed = True
+            if printed == False:
+                print(f"--- No {self.PRIORITY_MAP[priority]} Priority Tasks ---\n")
