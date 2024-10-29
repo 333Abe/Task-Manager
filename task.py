@@ -1,13 +1,13 @@
 class Task:
-    def __init__(self, id, desc, status, priority):
-        self._id = id
+    def __init__(self, task_id, desc, status, priority):
+        self._task_id = task_id
         self._desc = desc
         self._status = status
         self._priority = priority
 
     @property
-    def id(self):
-        return self._id
+    def task_id(self):
+        return self._task_id
 
     @property
     def desc(self):
@@ -38,7 +38,7 @@ class Task:
     
     def to_dict(self):
         return {
-            'id': self._id,
+            'id': self._task_id,
             'desc': self._desc,
             'status': self._status,
             'priority': self._priority

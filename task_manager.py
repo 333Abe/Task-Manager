@@ -31,20 +31,20 @@ class TaskManager():
             json.dump(save_list, f)
     
     def _assign_id(self):
-        id_list = [task.id for task in self._task_list]
+        id_list = [task.task_id for task in self._task_list]
         try:
             return max(id_list) + 1
         except ValueError:
             return 1
 
     def add_task(self, desc, priority):
-        id = self._assign_id()
-        task = Task(id, desc,'incomplete', priority )
+        task_id = self._assign_id()
+        task = Task(task_id, desc,'incomplete', priority )
         self._task_list.append(task)
     
-    def get_task_by_id(self, id):
+    def get_task_by_id(self, task_id):
         for task in self._task_list:
-            if task.id == id:
+            if task.task_id == task_id:
                 return task
         return None
     
@@ -53,7 +53,7 @@ class TaskManager():
     
     def print_single_task(self, task):
         print(
-            f"ID: {task.id}\n"
+            f"ID: {task.task_id}\n"
             f"Description:\n{task.desc}\n"
             f"Priority: {self.PRIORITY_MAP[task.priority]}\n"
             f"Status: {task.status.title()}"
@@ -81,18 +81,7 @@ class TaskManager():
                 self.print_single_task(task)
         if task_count < 1:
             print("Empty\n")
-    
-    # def order_tasks(self, priority):
-    #     for priority in range(1,4):
-    #         printed = False
-    #         print(f"--- {self.PRIORITY_MAP[priority]} Priority Tasks ---")
-    #         for task in self._task_list:
-    #             if task.priority == priority:
-    #                 self.print_single_task(task)
-    #                 printed = True
-    #         if printed == False:
-    #             print(f"--- No {self.PRIORITY_MAP[priority]} Priority Tasks ---\n")
-    
+        
     def list_tasks_by_status(self):
         statuses = ['incomplete', 'complete']
         for status in statuses:

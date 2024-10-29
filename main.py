@@ -11,12 +11,12 @@ PRIORITY_MAP = {
     'low': 3
 }
     
-def validate_id(id):
+def validate_id(task_id):
     try:
-        id = int(id)
-        if id <= 0:
+        task_id = int(task_id)
+        if task_id <= 0:
             raise ValueError
-        return id
+        return task_id
     except ValueError:
         return False
 
@@ -45,12 +45,12 @@ def split_user_input(user_input):
     command_list.append(command)
     return command_list
 
-def return_task(id, task_manager):
-    id = validate_id(id)
-    if not id:
+def return_task(task_id, task_manager):
+    task_id = validate_id(task_id)
+    if not task_id:
         print("Invalid id. Type 'help for more information.")
         return False
-    task = task_manager.get_task_by_id(id)
+    task = task_manager.get_task_by_id(task_id)
     if not task:
         print("No task matches supplied id. Type 'help' for more information.")
         return False
@@ -97,8 +97,8 @@ def input_parser(user_input, task_manager):
     
     if command[0] == 'complete' or command[0] == 'c':
         if len(command) == 2:
-            id = command[1]
-            task = return_task(id, task_manager)
+            task_id = command[1]
+            task = return_task(task_id, task_manager)
             if not task:
                 return True
             complete_command = CompleteTaskCommand(task_manager, task)
@@ -109,8 +109,8 @@ def input_parser(user_input, task_manager):
     
     if command[0] == 'modify' or command[0] == 'm':
         if len(command) == 4:
-            id = command[1]
-            task = return_task(id, task_manager)
+            task_id = command[1]
+            task = return_task(task_id, task_manager)
             if not task:
                 return True
             if command[2] == 'd':
@@ -128,8 +128,8 @@ def input_parser(user_input, task_manager):
     
     if command[0] == 'delete' or command[0] == 'd':
         if len(command) == 2:
-            id = command[1]
-            task = return_task(id, task_manager)
+            task_id = command[1]
+            task = return_task(task_id, task_manager)
             if not task:
                 return True
             task_manager.print_single_task(task)
